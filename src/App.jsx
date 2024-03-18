@@ -11,18 +11,16 @@ function App() {
 
 
     return (
-        <>
-            <BrowserRouter future={{ v7_startTransition: true }}>
-                <HeaderSection />
-                <div className='homepage-container-web'>
-                    <Routes>
-                        <Route path='/' element={<Homepage />} />
-                        <Route path='/servicios/disponibles' element={<DisponiblesPage />} />
-                    </Routes>
-                </div>
-                <FooterSection />
-            </BrowserRouter>
-        </>
+        <BrowserRouter future={{ v7_startTransition: true }}>
+            <HeaderSection />
+            <div className='homepage-container-web'>
+                <Routes>
+                    <Route path='/' element={<Homepage />} />
+                    <Route path='/servicios/disponibles' element={<DisponiblesPage />} />
+                </Routes>
+            </div>
+            <FooterSection />
+        </BrowserRouter>
     );
 }
 

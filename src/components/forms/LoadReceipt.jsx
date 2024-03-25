@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import * as usuarioService from '../../services/UsuariosService.js';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'

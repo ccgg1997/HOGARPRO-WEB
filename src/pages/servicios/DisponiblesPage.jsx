@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import Form from 'react-bootstrap/Form';
-import { fetchLaboresDisponibles } from '../../services/ServiciosService';
+import { Button } from 'react-bootstrap';
 
+import { fetchLaboresDisponibles } from '../../services/ServiciosService';
 import GenericTable from "../../components/tables/GenericTable";
 import LoadReceiptForm from '../../components/forms/LoadReceipt';
+import WorkerCard from '../../components/workers/WorkerCard';
 
-function parseResponse(data) {
+const parseResponse = (data) => {
     let parsedData = [];
     data.forEach((labor) => {
         labor.laborTrabajador.forEach((labTrabajador) => {
@@ -29,8 +30,13 @@ function parseResponse(data) {
     return parsedData;
 }
 
+
+
 function DisponiblesPage() {
     const [data, setData] = useState([]);
+    const [workerId, setWorkerId] = useState('');
+    const [showWorkerCard, setShowWorkerCard] = useState(false);
+
     const columns = [
         {
             name: 'Tipo',
@@ -61,20 +67,40 @@ function DisponiblesPage() {
             selector: row => row.unidadPrecio,
             sortable: true,
             reorder: true,
+            maxWidth: '10rem'
         },
         {
             name: 'Contratar',
-            sortable: true,
-            reorder: false,
+            button: true,
+            minWidth: "10rem",
+            cell: (row, index) => (
+                <Button
+                    variant="primary"
+                    className='w-100 p-1'
+                    data-tag="allowRowEvents"
+                    onClick={() => showWorkerInfo(row, index)}
+                >
+                    Ver
+                </Button>
+            )
         },
     ];
 
-    useEffect(() => {
+    const showWorkerInfo = (row, index) => {
+        setWorkerId(row.usuarioId);
+        setShowWorkerCard(true);
+    }
+
+
+    const loadLaboresDisponibles = async () => {
         fetchLaboresDisponibles()
             .then(response => {
                 setData(parseResponse(response))
             })
             .catch(err => console.error(err))
+    }
+    useEffect(() => {
+        loadLaboresDisponibles()
     }, []);
 
     return (
@@ -100,6 +126,10 @@ function DisponiblesPage() {
                     </div>
                 </div>
             </div >
+            {/* Modals */}
+            {showWorkerCard && (
+                <WorkerCard isOpen={showWorkerCard} onClose={() => { setShowWorkerCard(false); }} workerId={workerId} />
+            )}
         </main >
 
     );

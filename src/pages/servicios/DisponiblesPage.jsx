@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form';
 import { fetchLaboresDisponibles } from '../../services/ServiciosService';
 
 import GenericTable from "../../components/tables/GenericTable";
+import LoadReceiptForm from '../../components/forms/LoadReceipt';
 
 function parseResponse(data) {
     let parsedData = [];
@@ -82,21 +83,7 @@ function DisponiblesPage() {
                 <div className="card bg-info text-white justify-content-center">
                     <div className="card-body justify-content-center">
                         <div className="row mx-auto justify-content-center">
-                            <form id="cargar_recibo" className="form-inline">
-                                <div className="input-group">
-                                    <label htmlFor="" className="mt-2 mr-sm-2">
-                                        Realiza la carga del recibo de servicios:
-                                    </label>
-                                    <div className="custom-file px-4">
-                                        <Form.Control syze="sm" type="file" placeholder="Recibo De Servicios" />
-                                    </div>
-                                    <input
-                                        type="submit"
-                                        className="btn btn-primary mx-auto col-sm-3 loat-right"
-                                        defaultValue="Enviar"
-                                    />
-                                </div>
-                            </form>
+                            <LoadReceiptForm />
                         </div>
                     </div>
                 </div>

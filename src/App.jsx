@@ -19,7 +19,7 @@ function App() {
                 <Routes>
                     <Route path='/login' element={ isLoggedIn ? <Homepage /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
                     <Route path='/' element={ isLoggedIn ? <Homepage /> : <Navigate to='/login' />} />
-                    <Route path='/servicios/disponibles' element={<DisponiblesPage />} />
+                    <Route path='/servicios/disponibles' element={isLoggedIn ?<DisponiblesPage />: <Navigate to='/login' />} />
                 </Routes>
             </div>
             <FooterSection />

@@ -5,6 +5,7 @@ import HeaderSection from './components/commons/HeaderSection.jsx';
 import Homepage from "./pages/Homepage.jsx";
 import Login from "./pages/login/Login.jsx"
 import DisponiblesPage from "./pages/servicios/DisponiblesPage.jsx";
+import ContratadosPage from "./pages/servicios/ContratadosPage.jsx";
 import React, { useState } from 'react';
 
 
@@ -17,9 +18,10 @@ function App() {
             <HeaderSection />
             <div className='homepage-container-web'>
                 <Routes>
-                    <Route path='/login' element={ isLoggedIn ? <Homepage /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
-                    <Route path='/' element={ isLoggedIn ? <Homepage /> : <Navigate to='/login' />} />
-                    <Route path='/servicios/disponibles' element={isLoggedIn ?<DisponiblesPage />: <Navigate to='/login' />} />
+                    <Route path='/' element={isLoggedIn ? <Homepage /> : <Navigate to='/login' />} />
+                    <Route path='/login' element={isLoggedIn ? <Homepage /> : <Login setIsLoggedIn={setIsLoggedIn} />} />
+                    <Route path='/servicios/contratados' element={isLoggedIn ? <ContratadosPage /> : <Navigate to='/login' />} />
+                    <Route path='/servicios/disponibles' element={isLoggedIn ? <DisponiblesPage /> : <Navigate to='/login' />} />
                 </Routes>
             </div>
             <FooterSection />

@@ -21,7 +21,7 @@ function HeaderSection() {
                             <NavDropdown.Item as={Link} to="/servicios/disponibles">
                                 Contratar Servicios
                             </NavDropdown.Item>
-                            <NavDropdown.Item as={Link} to="/servicios/disponibles">
+                            <NavDropdown.Item as={Link} to="/servicios/contratados">
                                 Servicios Contratados
                             </NavDropdown.Item>
                         </NavDropdown>

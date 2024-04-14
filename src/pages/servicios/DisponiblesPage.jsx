@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from 'react-bootstrap';
 
 import { fetchLaboresDisponibles } from '../../services/ServiciosService';
 import GenericTable from "../../components/tables/GenericTable";
 import LoadReceiptForm from '../../components/forms/LoadReceipt';
 import WorkerCard from '../../components/workers/WorkerCard';
+import RefreshButton from '../../components/tables/RefreshButton';
 
 const parseResponse = (data) => {
     let parsedData = [];
@@ -26,7 +27,6 @@ const parseResponse = (data) => {
 
         })
     })
-    console.log('formated_data', parsedData);
     return parsedData;
 }
 
@@ -36,6 +36,7 @@ function DisponiblesPage() {
     const [data, setData] = useState([]);
     const [workerId, setWorkerId] = useState('');
     const [showWorkerCard, setShowWorkerCard] = useState(false);
+    const [loadingTable, setLoadingTable] = useState(false);
 
     const columns = [
         {
@@ -93,15 +94,22 @@ function DisponiblesPage() {
 
 
     const loadLaboresDisponibles = async () => {
+        setLoadingTable(true);
         fetchLaboresDisponibles()
             .then(response => {
                 setData(parseResponse(response))
+                setLoadingTable(false)
             })
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err);
+                setLoadingTable(false);
+            })
     }
     useEffect(() => {
         loadLaboresDisponibles()
     }, []);
+
+    const actionsMemo = useMemo(() => <RefreshButton action={loadLaboresDisponibles} />, []);
 
     return (
         <main role="main" className="container">
@@ -119,7 +127,14 @@ function DisponiblesPage() {
                             <div className="card-body">
                                 <h3 className="text-center">Servicios Disponibles</h3>
                                 <div className="row">
-                                    <GenericTable columns={columns} data={data} />
+                                    <GenericTable
+                                        columns={columns}
+                                        data={data}
+                                        args={{
+                                            progressPending: loadingTable,
+                                            actions: actionsMemo
+                                        }}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -128,7 +143,7 @@ function DisponiblesPage() {
             </div >
             {/* Modals */}
             {showWorkerCard && (
-                <WorkerCard isOpen={showWorkerCard} onClose={() => { setShowWorkerCard(false); }} workerId={workerId} />
+                <WorkerCard isOpen={showWorkerCard} onClose={() => { setShowWorkerCard(false); }} onWorkerHired={loadLaboresDisponibles} workerId={workerId} />
             )}
         </main >
 

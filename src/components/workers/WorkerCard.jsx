@@ -8,7 +8,7 @@ import * as serviciosService from '../../services/ServiciosService.js';
 
 const MySwal = withReactContent(Swal)
 
-const WorkerCard = ({ isOpen, onClose, workerId }) => {
+const WorkerCard = ({ isOpen, onClose, onWorkerHired, workerId }) => {
     const [data, setData] = useState({});
     const [unitsNumber, setUnitsNumber] = useState('');
 
@@ -43,6 +43,7 @@ const WorkerCard = ({ isOpen, onClose, workerId }) => {
                 labor: 1
             }).then(result => {
                 console.log(result);
+                onWorkerHired();
                 MySwal.fire('Servicio Contratado Satisfactoriamente');
             })
                 .catch(error => {

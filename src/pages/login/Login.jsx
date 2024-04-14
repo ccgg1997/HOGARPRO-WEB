@@ -1,12 +1,6 @@
 import React from 'react';
 import {
-  MDBBtn,
-  MDBContainer,
-  MDBCard,
   MDBCardBody,
-  MDBCardImage,
-  MDBRow,
-  MDBCol,
   MDBIcon,
   MDBInput
 } from 'mdb-react-ui-kit';
@@ -26,7 +20,7 @@ function Login({setIsLoggedIn}) {
       <div
         className="d-flex justify-content-end align-items-center"
         style={{
-          backgroundImage: 'url(https://img.freepik.com/free-photo/bearded-builder-man-construction-uniform-safety-helmet-wearing-rubber-gloves-holding-paint-roller-looking-camera-happy-confident-showing-ok-sign-standing-purple-background_141793-110835.jpg?t=st=1711774801~exp=1711778401~hmac=f3ead3bf588126fd60cf4d6a19b1d95c4c0a968d92bf5c380b9c4edb36b78874&w=1060)',
+          backgroundImage: 'url(/img/bgOptimizado.jpg',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           width: '100%',

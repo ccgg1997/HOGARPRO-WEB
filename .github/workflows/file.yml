@@ -38,11 +38,11 @@ jobs:
           latest_pr_number=$(gh pr list | head -n 1 | awk '{print $1}')
           echo "EL ULTIMO PR ES: $latest_pr_number"
           output=$(gh api repos/ccgg1997/HOGARPRO-WEB/collaborators | jq -r '.[].login')
-          read -r -a collaborators <<< "$output"
           author=$(gh api repos/${{ github.repository }}/pulls/${latest_pr_number} | jq -r '.user.login')
-          filtered_collaborators=($(echo "${collaborators[@]}" | grep -v -e "$author"))
-          random_reviewer1=$(echo "${filtered_collaborators[@]}" | shuf -n 1)
-          random_reviewer2=$(echo "${filtered_collaborators[@]}" | grep -v "$random_reviewer1" | shuf -n 1)
+          filtered_output=($(for output1 in "${output[@]}"; do echo "$output1"; done | grep -v -e "$author"))
+          random_reviewer1=$(printf "%s\n" "${filtered_output[@]}" | shuf -n 1)
+          random_reviewer2=$(printf "%s\n" "${filtered_output[@]}" | grep -v "$random_reviewer1" | shuf -n 1)
+
           curl -X POST \
             -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \

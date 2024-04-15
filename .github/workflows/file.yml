@@ -22,13 +22,15 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Check if PR description is empty
         run: |
-          npm install || exit 1
-
-      - name: Build front-end
-        run: |
-          npm run build || exit 1
+          description=$(gh pr view $PR_NUMBER --json title --json body | jq -r '.body')
+          if [ -z "$description" ]; then
+            echo "The PR description is empty. Exiting..."
+            exit 1
+          else
+            echo "The PR description is not empty"
+          fi
         
       - name: Assign Random Reviewer
         run: |
@@ -58,7 +60,15 @@ jobs:
             -d '{"state":"closed"}' \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}"
     
-    ## This is the code that that we use to practice, to run a script and create pr       
+    ## This is the code that that we use to practice, to run a script and create pr   
+     # - name: Install dependencies
+      #   run: |
+      #     npm install || exit 1
+
+      # - name: Build front-end
+      #   run: |
+      #     npm run build || exit 1
+          
     # - name: Setup python
       #   uses: actions/setup-python@v5
       #   with:

@@ -39,13 +39,12 @@ jobs:
           echo "EL ULTIMO PR ES: $latest_pr_number"
           output=$(gh api repos/ccgg1997/HOGARPRO-WEB/collaborators | jq -r '.[].login')
           read -r -a collaborators <<< "$output"
-          shuffled_collaborators=($(shuf -e "${collaborators[@]}"))
-          random_reviewer1=${shuffled_collaborators[0]}
-          random_reviewer2=${shuffled_collaborators[1]}
+          random_reviewer1=$(gh api repos/ccgg1997/HOGARPRO-WEB/collaborators | jq -r '.[].login' | shuf -n 2 | awk 'NR==1{print $0}') 
+          random_reviewer2=$(gh api repos/ccgg1997/HOGARPRO-WEB/collaborators | jq -r '.[].login' | shuf -n 2 | awk 'NR==2{print $0}')
           curl -X POST \
             -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            -d "{\"reviewers\":[\"$random_reviewer\"]}" \
+            -d "{\"reviewers\":[\"$random_reviewer1\",\"$random_reviewer2\"]}" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${latest_pr_number}/requested_reviewers"
 
   close-pr:

@@ -1,0 +1,100 @@
+name: file
+
+on:
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    env:
+      OWNER: ${{ github.repository_owner }}
+      REPO: ${{ github.event.repository.name }}
+      PR_NUMBER: ''
+      GH_TOKEN: ${{ secrets.REPO_TOKEN }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Check if PR description is empty
+        run: |
+          latest_pr_number=$(gh pr list | head -n 1 | awk '{print $1}')
+          description=$(gh pr view $latest_pr_number --json title --json body | jq -r '.body')
+          if [ -z "$description" ]; then
+            echo "The PR description is empty. Exiting..."
+            exit 1
+          else
+            echo "The PR description is not empty"
+          fi
+        
+      - name: Assign Random Reviewer
+        run: |
+          latest_pr_number=$(gh pr list | head -n 1 | awk '{print $1}')
+          echo "EL ULTIMO PR ES: $latest_pr_number"
+          output=$(gh api repos/ccgg1997/HOGARPRO-WEB/collaborators | jq -r '.[].login')
+          author=$(gh api repos/${{ github.repository }}/pulls/${latest_pr_number} | jq -r '.user.login')
+          filtered_output=($(for output1 in "${output[@]}"; do echo "$output1"; done | grep -v -e "$author"))
+          random_reviewer1=$(printf "%s\n" "${filtered_output[@]}" | shuf -n 1)
+          random_reviewer2=$(printf "%s\n" "${filtered_output[@]}" | grep -v "$random_reviewer1" | shuf -n 1)
+
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d "{\"reviewers\":[\"$random_reviewer1\",\"$random_reviewer2\"]}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${latest_pr_number}/requested_reviewers"
+
+  close-pr:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ failure() }}
+    steps:
+      - name: Close pull request
+        run: |
+          echo "Closing pull request due to build failure..."
+          curl -X PATCH \
+            -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{"state":"closed"}' \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}"
+    
+    ## This is the code that that we use to practice, to run a script and create pr   
+     # - name: Install dependencies
+      #   run: |
+      #     npm install || exit 1
+
+      # - name: Build front-end
+      #   run: |
+      #     npm run build || exit 1
+
+    # - name: Setup python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.12'
+
+      # - name: Validate file creation
+      #   run: |
+      #     python ./example.py
+      #     if [ -f "file.txt" ]; then
+      #       echo "file.txt exists"
+      #     else
+      #       echo "file.txt does not exist"
+      #       echo "**Validation failed. Skipping PR creation and reviewer assignment.**"
+      #       exit 1  # Use a non-zero exit code to indicate failure, but don't prevent the push
+      #     fi
+
+      # - name: create pull request
+      #   run: |
+      #     pr_number=$(gh pr create -B main -H develop --title 'Merge develop into main' --body 'Created by GitHub Actions'| grep -oP '\/pull\/(\d+)'| sed 's/\/pull\///'); echo "PR number is $pr_number"; echo "::set-output name=pr_number::$pr_number"
+      #     echo "::set-output name=pr_number::$pr_number"
+      #     echo "PR_NUMBER={$pr_number}" >> $GITHUB_ENV
+      #     echo "PR number at moment of create pr is $pr_number"
+      #     echo "PR number at moment of create pr is $PR_NUMBER"
+
+      #   env:
+      #     REPO_TOKEN: ${{ secrets.REPO_TOKEN }}

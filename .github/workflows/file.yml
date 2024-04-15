@@ -39,13 +39,9 @@ jobs:
           echo "EL ULTIMO PR ES: $latest_pr_number"
           output=$(gh api repos/ccgg1997/CLASEDS2/collaborators | jq -r '.[].login')
           read -r -a collaborators <<< "$output"
-          random_index1=$(( RANDOM % ${#collaborators[@]} ))
-          random_index2=$(( RANDOM % ${#collaborators[@]} ))
-          while [ $random_index1 -eq $random_index2 ]; do
-            random_index2=$(( (random_index2 + 1) % ${#collaborators[@]} ))
-          done
-          random_reviewer1=${collaborators[random_index1]}
-          random_reviewer2=${collaborators[random_index2]}
+          shuffled_collaborators=($(shuf -e "${collaborators[@]}"))
+          random_reviewer1=${shuffled_collaborators[0]}
+          random_reviewer2=${shuffled_collaborators[1]}
           curl -X POST \
             -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \

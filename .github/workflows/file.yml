@@ -24,7 +24,8 @@ jobs:
 
       - name: Check if PR description is empty
         run: |
-          description=$(gh pr view $PR_NUMBER --json title --json body | jq -r '.body')
+          latest_pr_number=$(gh pr list | head -n 1 | awk '{print $1}')
+          description=$(gh pr view $latest_pr_number --json title --json body | jq -r '.body')
           if [ -z "$description" ]; then
             echo "The PR description is empty. Exiting..."
             exit 1

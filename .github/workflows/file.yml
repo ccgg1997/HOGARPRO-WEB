@@ -55,7 +55,7 @@ jobs:
         run: |
           echo "Closing pull request due to build failure..."
           curl -X PATCH \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -d '{"state":"closed"}' \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}"
@@ -68,7 +68,7 @@ jobs:
       # - name: Build front-end
       #   run: |
       #     npm run build || exit 1
-          
+
     # - name: Setup python
       #   uses: actions/setup-python@v5
       #   with:
@@ -94,4 +94,4 @@ jobs:
       #     echo "PR number at moment of create pr is $PR_NUMBER"
 
       #   env:
-      #     GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+      #     REPO_TOKEN: ${{ secrets.REPO_TOKEN }}

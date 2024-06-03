@@ -37,7 +37,7 @@ function Login({ setIsLoggedIn }) {
       <div
         className="d-flex justify-content-end align-items-center"
         style={{
-          backgroundImage: 'url(/img/bgOptimizado.jpg',
+          backgroundImage: 'url(/img/bgOptimizado_old.jpg',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           width: '100%',
